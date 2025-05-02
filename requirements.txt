@@ -13,3 +13,4 @@ cloudinary
 python-multipart
 slowapi==0.1.4
 cloudinary
+redis==3.5.3

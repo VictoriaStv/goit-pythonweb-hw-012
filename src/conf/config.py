@@ -18,6 +18,7 @@ class Settings:
     CLOUDINARY_API_KEY: str = os.getenv("CLOUDINARY_API_KEY")
     CLOUDINARY_API_SECRET: str = os.getenv("CLOUDINARY_API_SECRET")
     REFRESH_TOKEN_EXPIRE_DAYS: int = 7
-
+    REDIS_HOST: str = os.getenv("REDIS_HOST")
+    REDIS_PORT: int = int(os.getenv("REDIS_PORT"))
 
 settings = Settings()
