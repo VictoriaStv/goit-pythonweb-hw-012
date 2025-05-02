@@ -229,3 +229,7 @@ def refresh_token(data: RefreshTokenRequest):
         "token_type": "bearer",
         "refresh_token": data.refresh_token,
     }
+
+@router.get("/admin-only")
+def admin_only(current_user: User = Depends(admin_required)):
+    return {"message": "Welcome, admin!"}
