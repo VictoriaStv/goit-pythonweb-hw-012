@@ -3,6 +3,9 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from jose import jwt, JWTError
 
+from src.services.redis_client import redis_client
+import json
+
 from src.database.models import User
 from src.schemas.auth import (
     UserCreate,
@@ -88,18 +91,29 @@ def verify_email(token: str, db: Session = Depends(get_db)):
 
 
 @router.post("/login")
-def login(
-    form_data: OAuth2PasswordRequestForm = Depends(),
-    db: Session = Depends(get_db),
-):
+def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     user = db.query(User).filter(User.email == form_data.username).first()
     if not user or not verify_password(form_data.password, user.password):
         raise HTTPException(status_code=401, detail="Invalid credentials")
-    if not user.confirmed:
-        raise HTTPException(status_code=403, detail="Email not verified")
+    # if not user.confirmed:
+#     raise HTTPException(status_code=403, detail="Email not confirmed")
+
 
     access_token = create_access_token(data={"sub": user.email})
     refresh_token = create_refresh_token(data={"sub": user.email})
+
+    redis_client.set(
+        user.email,
+        json.dumps({
+            "id": user.id,
+            "username": user.username,
+            "email": user.email,
+            "confirmed": user.confirmed,
+            "avatar": user.avatar,
+            "role": user.role,
+        }),
+    )
+
     return {
         "access_token": access_token,
         "refresh_token": refresh_token,
@@ -109,7 +123,10 @@ def login(
 
 @router.get("/me", response_model=UserResponse)
 @limiter.limit("5/minute")
-def read_users_me(current_user: User = Depends(get_current_user)):
+def read_users_me(
+    request: Request,
+    current_user: User = Depends(get_current_user),
+):
     return current_user
 
 

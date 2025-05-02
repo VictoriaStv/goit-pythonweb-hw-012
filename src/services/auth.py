@@ -10,6 +10,9 @@ from sqlalchemy.orm import Session
 from src.database.models import User
 from src.database.db import SessionLocal
 from src.conf.config import settings
+from src.services.redis_client import redis_client
+import json
+
 
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -64,6 +67,7 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"},
     )
+
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         email = payload.get("sub")
@@ -71,10 +75,17 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
             raise credentials_exception
     except JWTError:
         raise credentials_exception
+
+    cached_user = redis_client.get(email)
+    if cached_user:
+        user_data = json.loads(cached_user)
+        return User(**user_data)  
+
     user = get_user_by_email(email, db)
     if user is None:
         raise credentials_exception
     return user
+
 
 def create_password_reset_token(email: str) -> str:
     expire = datetime.utcnow() + timedelta(minutes=30)
