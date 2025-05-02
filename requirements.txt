@@ -1,0 +1,15 @@
+fastapi
+uvicorn[standard]
+SQLAlchemy
+psycopg2-binary
+alembic
+python-dotenv
+pydantic
+passlib[bcrypt]
+python-jose
+email-validator
+fastapi-mail
+cloudinary
+python-multipart
+slowapi==0.1.4
+cloudinary
