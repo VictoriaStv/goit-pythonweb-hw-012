@@ -1,50 +1,48 @@
-# goit-pythonweb-hw-10
+# goit-pythonweb-hw-12
 
-Розширене REST API з аутентифікацією, верифікацією електронної пошти, обмеженням запитів і завантаженням аватарів. Реалізовано на базі FastAPI, SQLAlchemy, PostgreSQL, Docker.
-
----
-
-## Функціонал
-
-- Реєстрація користувача з email-верифікацією
-- Вхід через JWT
-- Отримання інформації про себе `/me`
-- Обмеження кількості запитів (rate limiting)
-- Завантаження аватара на Cloudinary
-- CORS
-- CRUD для контактів
+Розширене REST API з підтримкою авторизації, верифікації email, rate limiting та завантаженням аватарів. Побудоване на базі FastAPI, Docker та PostgreSQL.
 
 ---
 
-## Технології
+##  Основний функціонал
+
+-  Реєстрація з email-підтвердженням  
+-  Вхід з JWT-аутентифікацією  
+-  Отримання власного профілю (`/me`)  
+-  Обмеження кількості запитів (rate limiting)  
+-  Завантаження аватарів на Cloudinary  
+-  Підтримка CORS  
+-  CRUD-операції для контактів
+
+---
+
+##  Технології
 
 - Python 3.12+
 - FastAPI
 - PostgreSQL (через Docker)
-- SQLAlchemy
-- Alembic
+- SQLAlchemy + Alembic
 - Pydantic
-- Uvicorn
 - JWT (PyJWT)
-- Cloudinary
-- SMTP
-- SlowAPI
+- Uvicorn
+- Cloudinary API
+- SMTP (email)
+- SlowAPI (rate limiting)
 
 ---
 
 ## Запуск проєкту
 
-### 1. Клонувати репозиторій:
+### 1. Клонування репозиторію
 
 ```bash
-git clone 
-cd goit-pythonweb-hw-10
+git clone <your_repo_url>
+cd goit-pythonweb-hw-12
 ```
 
-### 2. Створити файл `.env`:
+### 2. Створення `.env`
 
 ```env
-# .env
 POSTGRES_USER=postgres
 POSTGRES_PASSWORD=postgres
 POSTGRES_DB=contacts_db
@@ -65,29 +63,31 @@ CLOUDINARY_API_KEY=your_api_key
 CLOUDINARY_API_SECRET=your_api_secret
 ```
 
-> 📎 Можна використати шаблон `.env.example`
+>  Скористайтесь шаблоном `.env.example`, щоб швидко налаштувати змінні середовища.
 
 ---
 
-### 3. Запуск через Docker:
+### 3. Запуск у Docker
 
 ```bash
 docker compose up --build
 ```
 
-> API буде доступне за адресою: [http://localhost:8000](http://localhost:8000)
+> Застосунок буде доступний за адресою:  
+> [http://localhost:8000](http://localhost:8000)
 
 ---
 
-## Swagger
+##  Документація (Swagger UI)
 
-Документація:  
+Доступна за адресою:  
 [http://localhost:8000/docs](http://localhost:8000/docs)
 
 ---
 
-## Приклад POST-запиту на реєстрацію
+## Приклади запитів
 
+### Реєстрація користувача
 `POST /auth/signup`
 
 ```json
@@ -98,22 +98,17 @@ docker compose up --build
 }
 ```
 
----
-
-## Приклад GET-запиту на отримання свого профілю
-
+### Отримання профілю
 `GET /auth/me`  
-> Потрібен `Bearer` токен у заголовку Authorization
+> Потрібен токен у заголовку: `Authorization: Bearer <access_token>`
 
 ---
 
 ## Налаштування середовища
 
-Файл `.env.example` містить шаблон змінних середовища. Створіть `.env` на його основі, щоб налаштувати:
+У файлі `.env.example` зібрані всі необхідні змінні для:
 
-- Підключення до бази даних PostgreSQL
-- Секретний ключ для JWT
-- SMTP для надсилання листів
-- Cloudinary для аватарів
-
----
+- підключення до PostgreSQL  
+- роботи з JWT  
+- надсилання листів через SMTP  
+- інтеграції з Cloudinary
