@@ -17,3 +17,4 @@ redis==3.5.3
 pytest
 pytest-cov
 pytest-asyncio
+httpx
